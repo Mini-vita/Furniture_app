@@ -81,6 +81,14 @@ def register_datasets(train_p, test_p, valid_p=None, target_classes=None):
 def initialization():
     furniture_data_metadata= register_datasets(train_p=train_path, test_p=test_path, valid_p=valid_path, target_classes=target_classess)
     
+    if not 'model_final.pth' in os.listdir('.'):
+        txt = st.warning("model searching")
+        url = "https://www.dropbox.com/s/9an2i3twogsda7l/model_final.pth?dl=0"
+        r = requests.get(url, allow_redirects=True)
+        open("model_final", 'wb').write(r.content)
+        del r
+        txt.success("model uploaded successfully")
+    
     cfg = get_cfg()
     cfg.MODEL.DEVICE = 'cpu'
     cfg.merge_from_file(model_zoo.get_config_file("COCO-Detection/faster_rcnn_X_101_32x8d_FPN_3x.yaml"))
