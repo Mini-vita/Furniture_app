@@ -35,11 +35,11 @@ target_dict = {
     'Couch': 'sofa',
     'Table': 'table'
 }
-app_dir =  './'
-save_img_dir = './app/detect/'
-train_path='./'
-test_path='./app/test/'
-valid_path='./app/validation/'
+app_dir =  'mini-vita/furniture_app/main/'
+save_img_dir = 'mini-vita/furniture_app/main/app/detect/'
+train_path='mini-vita/furniture_app/main/'
+test_path='mini-vita/furniture_app/main/app/test/'
+valid_path='mini-vita/furniture_app/main/app/validation/'
 # dfpath = 'ikeadata/ikea_final_model0.csv'
 
 #mariadb와 연결하기! 
