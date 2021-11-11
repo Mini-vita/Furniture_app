@@ -102,7 +102,7 @@ def register_datasets(train_p, test_p, valid_p=None, target_classes=None):
   # E.g. {"training": "path/to/training",
   #          "valid": "path/to/valid"}
   for d in [train_p,test_p, valid_p]:
-    dataset_name = d.split("/")[-1]
+    dataset_name = d.split("/")[4]
     #print("Registering: {}".format(dataset_name))
     DatasetCatalog.register(dataset_name, lambda d=d: load_json_labels(d))
     MetadataCatalog.get(dataset_name).set(thing_classes=target_classes)
