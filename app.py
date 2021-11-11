@@ -113,7 +113,7 @@ def register_datasets(train_p, test_p, valid_p=None, target_classes=None):
 def model_load():
     if not 'model_final.pth' in os.listdir('.'):
          with st.spinner("Downloading model... this may take awhile! \n Don't stop it!"):
-                url = 'https://www.dropbox.com/s/9an2i3twogsda7l/model_final.pth?dl=0'
+                url = 'https://www.dropbox.com/s/9an2i3twogsda7l/model_final.pth?dl=1'
                 r = requests.get(url, allow_redirects=True)
                 model = pickle.loads(r.content)
                 model = torch.load(model)
@@ -187,7 +187,7 @@ def save_bbox_image(bgr_image,bbox_list,save_img_dir):
 @st.cache(allow_output_mutation=True,show_spinner=False)
 #crop한 사진에 대한 feature_vector csv 불러오기
 def load_feature_csv():
-    url = "https://www.dropbox.com/s/pbfco5zjbhe2aw7/style_all.csv?dl=0"  # dl=1 is important
+    url = "https://www.dropbox.com/s/pbfco5zjbhe2aw7/style_all.csv?dl=1"  # dl=1 is important
     u = urllib.request.urlopen(url)
     data = u.read()
     u.close()
