@@ -1,5 +1,6 @@
 import streamlit as st
 import io
+import torch
 # from state import get
 from streamlit.script_request_queue import RerunData
 from streamlit.script_runner import RerunException
