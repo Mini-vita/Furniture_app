@@ -155,7 +155,15 @@ def save_bbox_image(bgr_image,bbox_list,save_img_dir):
 @st.cache(allow_output_mutation=True,show_spinner=False)
 #crop한 사진에 대한 feature_vector csv 불러오기
 def load_feature_csv():
-    feature_df = pd.read_csv('./style_all.csv')
+    if not 'style_all.csv' in os.listdir('.'):
+        txt = st.warning("model searching")
+        url = "https://www.dropbox.com/s/pbfco5zjbhe2aw7/style_all.csv?dl=0"
+        r = requests.get(url, allow_redirects=True)
+        open("style_all.csv", 'wb').write(r.content)
+        del r
+        txt.success("model uploaded successfully")
+    
+   
     return feature_df
 
 #img 경로를 받아 tensor로 변환하는 함수
