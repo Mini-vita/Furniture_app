@@ -37,7 +37,7 @@ target_dict = {
 }
 app_dir =  'mini-vita/furniture_app/main/'
 save_img_dir = 'mini-vita/furniture_app/main/app/detect/'
-train_path='mini-vita/furniture_app/main/'
+train_path='mini-vita/furniture_app/main/app/train/'
 test_path='mini-vita/furniture_app/main/app/test/'
 valid_path='mini-vita/furniture_app/main/app/validation/'
 # dfpath = 'ikeadata/ikea_final_model0.csv'
