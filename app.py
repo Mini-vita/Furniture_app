@@ -14,6 +14,7 @@ import os
 import glob
 import scipy.spatial.distance as distance
 import re
+import urllib.request
 
 import pymysql
 import tensorflow as tf
@@ -78,17 +79,17 @@ def register_datasets(train_p, test_p, valid_p=None, target_classes=None):
     MetadataCatalog.get(dataset_name).set(thing_classes=target_classes)
   return MetadataCatalog.get(dataset_name)
 
+def model_load():
+    if not 'model_final.pth' in os.listdir('.'):
+         with st.spinner("Downloading model... this may take awhile! \n Don't stop it!"):
+                url = 'https://www.dropbox.com/s/9an2i3twogsda7l/model_final.pth?dl=0'
+                r = requests.get(url, allow_redirects=True)
+                model = pickle.loads(r.content)
+                model = torch.load(model)
+         return model
+    
 def initialization():
     furniture_data_metadata= register_datasets(train_p=train_path, test_p=test_path, valid_p=valid_path, target_classes=target_classess)
-    
-    if not 'model_final.pth' in os.listdir('.'):
-        txt = st.warning("model searching")
-        url = "https://www.dropbox.com/s/9an2i3twogsda7l/model_final.pth?dl=0"
-        r = requests.get(url, allow_redirects=True)
-        open("model_final", 'wb').write(r.content)
-        del r
-        txt.success("model uploaded successfully")
-    
     cfg = get_cfg()
     cfg.MODEL.DEVICE = 'cpu'
     cfg.merge_from_file(model_zoo.get_config_file("COCO-Detection/faster_rcnn_X_101_32x8d_FPN_3x.yaml"))
@@ -96,7 +97,7 @@ def initialization():
     cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.8
     
     #우리가 만든 모델로 가중치 가져오기! 
-    cfg.MODEL.WEIGHTS = "./model_final.pth"
+    cfg.MODEL.WEIGHTS = model_load()
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = 5 
     predictor = DefaultPredictor(cfg)
     return cfg, predictor
@@ -155,16 +156,11 @@ def save_bbox_image(bgr_image,bbox_list,save_img_dir):
 @st.cache(allow_output_mutation=True,show_spinner=False)
 #crop한 사진에 대한 feature_vector csv 불러오기
 def load_feature_csv():
-    if not 'style_all.csv' in os.listdir('.'):
-        txt = st.warning("model searching")
-        url = "https://www.dropbox.com/s/pbfco5zjbhe2aw7/style_all.csv?dl=0"
-        r = requests.get(url, allow_redirects=True)
-        open("style_all.csv", 'wb').write(r.content)
-        del r
-        txt.success("model uploaded successfully")
-    
-   
-    return feature_df
+    url = "https://www.dropbox.com/s/pbfco5zjbhe2aw7/style_all.csv?dl=0"  # dl=1 is important
+    u = urllib.request.urlopen(url)
+    data = u.read()
+    u.close()
+    return data
 
 #img 경로를 받아 tensor로 변환하는 함수
 def load_img(path):
