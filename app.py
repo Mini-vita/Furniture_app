@@ -28,7 +28,7 @@ from detectron2.utils.visualizer import Visualizer
 from detectron2.data import MetadataCatalog, DatasetCatalog
 
 #global variable
-target_classess=['Cabinetry', 'Chair', 'Couch', 'Lamp', 'Table'] 
+
 target_dict = {
     'Cabinetry': 'cabinet',
     'Chair': 'chair',
@@ -37,9 +37,7 @@ target_dict = {
 }
 app_dir =  'mini-vita/furniture_app/main/'
 save_img_dir = 'mini-vita/furniture_app/main/app/detect/'
-train_path='mini-vita/furniture_app/main/app/train/'
-test_path='mini-vita/furniture_app/main/app/test/'
-valid_path='mini-vita/furniture_app/main/app/validation/'
+
 # dfpath = 'ikeadata/ikea_final_model0.csv'
 
 #mariadb와 연결하기! 
@@ -121,6 +119,11 @@ def model_load():
     
 def initialization():
     DatasetCatalog.clear()
+    train_path='mini-vita/furniture_app/main/app/train/'
+    test_path='mini-vita/furniture_app/main/app/test/'
+    valid_path='mini-vita/furniture_app/main/app/validation/'
+    target_classess=['Cabinetry', 'Chair', 'Couch', 'Lamp', 'Table'] 
+    
     furniture_data_metadata= register_datasets(train_p=train_path, test_p=test_path, valid_p=valid_path, target_classes=target_classess)
     cfg = get_cfg()
     cfg.MODEL.DEVICE = 'cpu'
@@ -279,7 +282,7 @@ def clearold():
             
 @st.cache(show_spinner=False)
 def GetImage(user_img_path):
-    # cfg, predictor = initialization()
+    cfg, predictor = initialization()
     #delete unncessay history file
 #     files = glob.glob(save_img_dir+'*.jpg')
 #     if files:
