@@ -37,9 +37,9 @@ target_dict = {
 }
 app_dir =  './'
 save_img_dir = './app/detect/'
-train_path='./app/train_labels.json'
-test_path='./app/test_labels.json'
-valid_path='./app/validation_labels.json'
+train_path='./'
+test_path='./app/test/'
+valid_path='./app/validation/'
 # dfpath = 'ikeadata/ikea_final_model0.csv'
 
 #mariadb와 연결하기! 
@@ -61,6 +61,37 @@ def run_query(query, param):
      
 #Initialize the detectron model
 @st.cache(allow_output_mutation=True,show_spinner=False)
+def load_json_labels(image_folder):
+  from detectron2.structures import BoxMode
+   # """
+   # Returns Detectron2 style labels of images in image_folder based on JSON label file in image_folder.
+    
+    #TODO -- Maybe create some verbosity here? AKA, what are the outputs?
+    #TODO -- what if annotations = None? Can we create a call to create an annotations CSV in 1 hit?
+    
+    #Params
+   # ------
+   # image_folder (str): target folder containing images
+    #"""
+    # Get absolute path of JSON label file
+  for file in os.listdir(image_folder):
+    if file.endswith(".json"):
+      json_file = os.path.join(image_folder, file)
+
+  # TODO: Fix this assertion
+  assert json_file, "No .json label file found, please make one with annots_to_json()"
+
+  with open(json_file, "r") as f:
+    img_dicts = json.load(f)
+
+  # Convert bbox_mode to Enum of BoxMode.XYXY_ABS (doesn't work loading normal from JSON)
+  for img_dict in img_dicts:
+    for annot in img_dict["annotations"]:
+      annot["bbox_mode"] = BoxMode.XYXY_ABS
+
+  return img_dicts
+
+
 def register_datasets(train_p, test_p, valid_p=None, target_classes=None):
   """
   Registers a Detectron2 style dataset from training paths.
