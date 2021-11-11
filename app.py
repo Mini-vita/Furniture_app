@@ -120,6 +120,7 @@ def model_load():
          return model
     
 def initialization():
+    DatasetCatalog.clear()
     furniture_data_metadata= register_datasets(train_p=train_path, test_p=test_path, valid_p=valid_path, target_classes=target_classess)
     cfg = get_cfg()
     cfg.MODEL.DEVICE = 'cpu'
@@ -158,27 +159,28 @@ def get_bbox_list(outputs):
     return bbox_list
 
 
-def save_bbox_image(bgr_image,bbox_list,save_img_dir):
+def save_bbox_image(read_dir,bbox_list,save_dir):
     img_dict=[]
     counter=1
-
+    img = Image.open(read_dir)
     #Convert CV2 image to PIL Image for cropping
-    img = cv2.cvtColor(bgr_image, cv2.COLOR_BGR2RGB)
-    finalimg = Image.fromarray(img)
+#     img = cv2.cvtColor(bgr_image, cv2.COLOR_BGR2RGB)
+#     finalimg = Image.fromarray(img)
 
     for i in bbox_list:
         #name img file with index
         file_name=str(counter)+'.jpg'
-        path=save_img_dir+'/'+file_name
+        path=save_dir+ file_name
         # get bounding box coordinate for corping
         coordinate=i.get('coordinate')  
         # bbox coordinate should be in list when out put from detectron and change to tuple
         coordinate=tuple(coordinate)
         #crop image and save
-        crop_img=finalimg.crop(coordinate)
+        crop_img=img.crop(coordinate)
         crop_img.save(path)
         #store it in a dictionary with file name and class
-        temp_dict={'File_name':file_name,'class':target_classess[int(i['class'])]}
+        target_class=['Cabinetry', 'Chair', 'Couch', 'Lamp', 'Table'] 
+        temp_dict={'File_name':file_name,'class':target_class[int(i['class'])]}
         counter+=1
         img_dict.append(temp_dict)
 
@@ -287,7 +289,7 @@ def GetImage(user_img_path):
     imagecv = cv2.imread(user_img_path)
     outputs = predictor(imagecv)
     bbox_list=get_bbox_list(outputs) # get each bbx info
-    final_img_dict = save_bbox_image(imagecv, bbox_list,save_img_dir)
+    final_img_dict = save_bbox_image(user_img_path, bbox_list,save_img_dir)
     #get a furniture option list which is well formatted for users to read
     
 
@@ -322,19 +324,20 @@ if uploaded_file is not None:
 #     ikeadf = load_ikeadf(dfpath)
     
     image = Image.open(uploaded_file)
-    user_img_path = app_dir+uploaded_file.name
-    image.save(user_img_path)
+    user_path = app_dir+uploaded_file.name
+    image.save(user_path)
     
     st.sidebar.image(image,width = 250)
 
     st.sidebar.success('Upload Successful! Please wait for object detection.')
 
     #get image list from the detectron model
+    furniturelist=[]
     with st.spinner('Working hard on finding furniture...'):
         #delete unncessay history file
 
 
-        bbli,imgdict= GetImage(user_img_path)
+        bbli,imgdict= GetImage(user_path)
         furniturelist = getfurnlist(imgdict)
         #open cropped image of furniture
         for i,file in enumerate(furniturelist):
