@@ -113,14 +113,17 @@ def clearold():
 
 #mariadb와 연결하기! 
 @st.cache(allow_output_mutation=True,show_spinner=False, hash_funcs={"_thread.RLock": lambda _: None})
-def init_connection():
-    conn = pymysql.connect(host='34.127.31.177', user='root', password='0403', db='daewonng12', charset='utf8')
-    return conn
+# def init_connection():
+#     conn = pymysql.connect(host='34.127.31.177', user='root', password='0403', db='daewonng12', charset='utf8')
+#     return conn
 
 
 @st.cache(allow_output_mutation=True,show_spinner=False)
 #crop한 사진에 대한 feature_vector csv 불러오기
 def load_feature_csv():
+    feature_df = pd.read_csv('/app/style_all.csv')
+    feature_df = pd.read_csv('/app/style_all.csv')
+    feature_df = pd.read_csv('/app/style_all.csv')
     feature_df = pd.read_csv('/app/style_all.csv')
     return feature_df
 
